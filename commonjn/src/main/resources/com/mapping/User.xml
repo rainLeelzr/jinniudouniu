@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jinniu.commonjn.dao.UserDao">
+
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.jinniu.commonjn.model.User">
+		INSERT INTO TB_USER (
+			ID, COIN, DIAMOND, HORN, ID_NUM, IMAGE, IP, LAST_LOGIN_TIME, MOBILE_PHONE, NAME, NICK_NAME, OPEN_ID, SEX, U_ID
+		) VALUES (
+			#{id}, #{coin}, #{diamond}, #{horn}, #{idNum}, #{image}, #{ip}, #{lastLoginTime}, #{mobilePhone}, #{name}, #{nickName}, #{openId}, #{sex}, #{uId}
+		)
+	</insert>
+
+	<delete id="delete" parameterType="com.jinniu.commonjn.model.User">
+		DELETE FROM TB_USER <include refid="CriteriaSQL" />
+	</delete>
+
+	<update id="update" parameterType="com.jinniu.commonjn.model.User">
+		UPDATE TB_USER <include refid="SetSQL" /> <include refid="CriteriaSQL" />
+	</update>
+
+	<select id="selectCount" parameterType="com.jinniu.commonjn.model.User" resultType="_long">
+		SELECT COUNT(1) FROM TB_USER <include refid="CriteriaSQL" />
+	</select>
+
+	<select id="selectList" parameterType="com.jinniu.commonjn.model.User" resultMap="UserResultMap">
+		SELECT * FROM TB_USER <include refid="CriteriaSQL" /> <include refid="OrderbySQL" /> <include refid="LimitSQL" />
+	</select>
+
+	<resultMap id="UserResultMap" type="com.jinniu.commonjn.model.User">
+		<id property="id" column="ID" />
+		<result property="coin" column="COIN" />
+		<result property="diamond" column="DIAMOND" />
+		<result property="horn" column="HORN" />
+		<result property="idNum" column="ID_NUM" />
+		<result property="image" column="IMAGE" />
+		<result property="ip" column="IP" />
+		<result property="lastLoginTime" column="LAST_LOGIN_TIME" />
+		<result property="mobilePhone" column="MOBILE_PHONE" />
+		<result property="name" column="NAME" />
+		<result property="nickName" column="NICK_NAME" />
+		<result property="openId" column="OPEN_ID" />
+		<result property="sex" column="SEX" />
+		<result property="uId" column="U_ID" />
+	</resultMap>
+
+	<sql id="SetSQL">
+		<set>
+			<if test="entity.coin != null">COIN = #{entity.coin},</if>
+			<if test="entity.diamond != null">DIAMOND = #{entity.diamond},</if>
+			<if test="entity.horn != null">HORN = #{entity.horn},</if>
+			<if test="entity.idNum != null">ID_NUM = #{entity.idNum},</if>
+			<if test="entity.image != null">IMAGE = #{entity.image},</if>
+			<if test="entity.ip != null">IP = #{entity.ip},</if>
+			<if test="entity.lastLoginTime != null">LAST_LOGIN_TIME = #{entity.lastLoginTime},</if>
+			<if test="entity.mobilePhone != null">MOBILE_PHONE = #{entity.mobilePhone},</if>
+			<if test="entity.name != null">NAME = #{entity.name},</if>
+			<if test="entity.nickName != null">NICK_NAME = #{entity.nickName},</if>
+			<if test="entity.openId != null">OPEN_ID = #{entity.openId},</if>
+			<if test="entity.sex != null">SEX = #{entity.sex},</if>
+			<if test="entity.uId != null">U_ID = #{entity.uId},</if>
+		</set>
+	</sql>
+
+	<sql id="CriteriaSQL">
+		<where>
+			<if test="criteria != null and criteria.notEmpty">
+				<foreach collection="criteria.criterions" item="criterion">
+					<choose>
+						<when test="criterion.noValue">
+							and ${criterion.field} ${criterion.condition}
+						</when>
+						<when test="criterion.singleValue">
+							and ${criterion.field} ${criterion.condition} #{criterion.value}
+						</when>
+						<when test="criterion.betweenValue">
+							and ${criterion.field} ${criterion.condition} #{criterion.value} and #{criterion.value2}
+						</when>
+						<when test="criterion.listValue">
+							and ${criterion.field} ${criterion.condition}
+							<foreach collection="criterion.value" item="item" open="(" separator="," close=")">
+								#{item}
+							</foreach>
+						</when>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+	</sql>
+
+	<sql id="OrderbySQL">
+		<if test="criteria != null and criteria.orderly">
+			ORDER BY 
+			<foreach collection="criteria.orderbies" item="orderby" separator=",">
+				${orderby.field} ${orderby.value}
+			</foreach>
+		</if>
+	</sql>
+
+	<sql id="LimitSQL">
+		<if test="criteria != null and criteria.pagination">
+			LIMIT #{criteria.limit.value}, #{criteria.limit.value2}
+		</if>
+	</sql>
+
+</mapper>

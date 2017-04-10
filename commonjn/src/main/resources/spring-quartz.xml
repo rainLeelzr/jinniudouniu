@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+xmlns:p="http://www.springframework.org/schema/p" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="
+
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+">
+
+	<!-- 定时器 -->
+	<!-- 检查redis连接定时器 -->
+	<!--<bean id="quartzCheckConnect"-->
+		<!--class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+		<!--<property name="jobDetail">-->
+			<!--<bean-->
+				<!--class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+				<!--<property name="targetObject" ref="checkRedisConnect" />-->
+				<!--<property name="targetMethod" value="checkPingHu" />-->
+				<!--<property name="concurrent" value="false" />-->
+			<!--</bean>-->
+		<!--</property>-->
+		<!--&lt;!&ndash; 10秒一次 &ndash;&gt;-->
+		<!--<property name="cronExpression" value="0/10 * * * * ?" />-->
+	<!--</bean>-->
+
+
+	<!-- 任务调度工厂 -->
+	<!--<bean id="schedulerFactory"-->
+		<!--class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
+		<!--<property name="triggers">-->
+			<!--<list>-->
+				<!--&lt;!&ndash; 调度任务 &ndash;&gt;-->
+				<!--<ref bean="quartzCheckConnect" />-->
+			<!--</list>-->
+		<!--</property>-->
+	<!--</bean>-->
+
+
+</beans>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jinniu.commonjn.dao.RoomMemberDao">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.jinniu.commonjn.model.RoomMember">
+		INSERT INTO TB_ROOM_MEMBER (
+			ID, JOIN_TIME, LEAVE_TIME, ROOM_ID, SEAT, STATE, USER_ID
+		) VALUES (
+			#{id}, #{joinTime}, #{leaveTime}, #{roomId}, #{seat}, #{state}, #{userId}
+		)
+	</insert>
+
+    <delete id="delete" parameterType="com.jinniu.commonjn.model.RoomMember">
+        DELETE FROM TB_ROOM_MEMBER
+        <include refid="CriteriaSQL"/>
+    </delete>
+
+    <update id="update" parameterType="com.jinniu.commonjn.model.RoomMember">
+        UPDATE TB_ROOM_MEMBER
+        <include refid="SetSQL"/>
+        <include refid="CriteriaSQL"/>
+    </update>
+
+    <select id="selectCount" parameterType="com.jinniu.commonjn.model.RoomMember" resultType="_long">
+        SELECT COUNT(1) FROM TB_ROOM_MEMBER
+        <include refid="CriteriaSQL"/>
+    </select>
+
+    <select id="selectList" parameterType="com.jinniu.commonjn.model.RoomMember" resultMap="RoomMemberResultMap">
+        SELECT * FROM TB_ROOM_MEMBER
+        <include refid="CriteriaSQL"/>
+        <include refid="OrderbySQL"/>
+        <include refid="LimitSQL"/>
+    </select>
+
+    <select id="selectByUserIdForCheck" parameterType="com.jinniu.commonjn.model.RoomMember"
+            resultMap="RoomMemberResultMap">
+		select * from tb_room_member where user_id=#{userId} and leave_time IS NULL;
+	</select>
+    <select id="selectByUserIdForReady" parameterType="com.jinniu.commonjn.model.RoomMember"
+            resultMap="RoomMemberResultMap">
+		select * from tb_room_member where user_id=#{userId} and state = #{state};
+	</select>
+    <select id="selectForStart" parameterType="com.jinniu.commonjn.model.RoomMember" resultMap="RoomMemberResultMap">
+		select * from tb_room_member where room_id=#{roomId} and state = #{state};
+	</select>
+    <select id="selectForDismiss" parameterType="com.jinniu.commonjn.model.RoomMember" resultMap="RoomMemberResultMap">
+		select * from tb_room_member where room_id=#{roomId} and state = #{state} and leave_time IS NULL ;
+	</select>
+
+
+    <resultMap id="RoomMemberResultMap" type="com.jinniu.commonjn.model.RoomMember">
+        <id property="id" column="ID"/>
+        <result property="joinTime" column="JOIN_TIME"/>
+        <result property="leaveTime" column="LEAVE_TIME"/>
+        <result property="roomId" column="ROOM_ID"/>
+        <result property="seat" column="SEAT"/>
+        <result property="state" column="STATE"/>
+        <result property="userId" column="USER_ID"/>
+    </resultMap>
+
+    <sql id="SetSQL">
+        <set>
+            <if test="entity.joinTime != null">JOIN_TIME = #{entity.joinTime},</if>
+            <if test="entity.leaveTime != null">LEAVE_TIME = #{entity.leaveTime},</if>
+            <if test="entity.roomId != null">ROOM_ID = #{entity.roomId},</if>
+            <if test="entity.seat != null">SEAT = #{entity.seat},</if>
+            <if test="entity.state != null">STATE = #{entity.state},</if>
+            <if test="entity.userId != null">USER_ID = #{entity.userId},</if>
+        </set>
+    </sql>
+
+    <sql id="CriteriaSQL">
+        <where>
+            <if test="criteria != null and criteria.notEmpty">
+                <foreach collection="criteria.criterions" item="criterion">
+                    <choose>
+                        <when test="criterion.noValue">
+                            and ${criterion.field} ${criterion.condition}
+                        </when>
+                        <when test="criterion.singleValue">
+                            and ${criterion.field} ${criterion.condition} #{criterion.value}
+                        </when>
+                        <when test="criterion.betweenValue">
+                            and ${criterion.field} ${criterion.condition} #{criterion.value} and #{criterion.value2}
+                        </when>
+                        <when test="criterion.listValue">
+                            and ${criterion.field} ${criterion.condition}
+                            <foreach collection="criterion.value" item="item" open="(" separator="," close=")">
+                                #{item}
+                            </foreach>
+                        </when>
+                    </choose>
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <sql id="OrderbySQL">
+        <if test="criteria != null and criteria.orderly">
+            ORDER BY
+            <foreach collection="criteria.orderbies" item="orderby" separator=",">
+                ${orderby.field} ${orderby.value}
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="LimitSQL">
+        <if test="criteria != null and criteria.pagination">
+            LIMIT #{criteria.limit.value}, #{criteria.limit.value2}
+        </if>
+    </sql>
+
+</mapper>

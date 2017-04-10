@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- [可选项] 自定义属性, 可以在模板文件(*.vm)中直接引用 -->
+    <properties>
+        <property name="customName1" value="customValue1" />
+        <property name="customName2" value="customValue2" />
+    </properties>
+
+    <!-- [可选项] 引入资源文件, 可以通过 ${} 占位符引用资源文件的内容 -->
+    <properties location="jdbc.properties" />
+
+    <!-- [必须项] 数据源配置 -->
+    <datasource>
+        <!-- 数据库连接地址 -->
+        <property name="url" value="${jdbc.url}" />
+        <!-- 连接数据库的驱动 -->
+        <property name="driverClass" value="${jdbc.driver}" />
+        <!-- 账户名称 -->
+        <property name="username" value="${jdbc.username}" />
+        <!-- 账户密码 -->
+        <property name="password" value="${jdbc.password}" />
+    </datasource>
+
+    <!-- [可选项] 数据库配置 -->
+    <schema>
+        <!-- 表名分隔符, 用于驼峰标识拼写 -->
+        <!-- 表名: user_info, 生成的 Java 类: UserInfo -->
+        <property name="tableNameSeparator" value="_" />
+        <!-- 列名分隔符, 用于驼峰标识拼写 -->
+        <!-- 列名: user_id, 生成的 Java 属性名: userId -->
+        <property name="columnNameSeparator" value="_" />
+        <!-- 忽略表的模式串, 支持星配符, 被匹配表将被忽略不处理 -->
+        <!-- 若有表 temp_1, temp_2..., 则不会生成对应的 Temp1, Temp2 类 -->
+        <property name="tableIgnores" value="temp*" />
+        <!-- 逃逸模式匹配的表, 下列配置的表即使被上述模式匹配也不会被忽略 -->
+        <!-- 此配置项配置的表无视 tableIgnores 规则, 它们总是会被生成对应的 Java 类 -->
+        <!-- 如只想生成 user_info 表的代码, tableIgnores 配值 *, 此项配值 user_info -->
+        <property name="tableEscapes">
+            <value>temp_2</value>
+            <value>temp_3</value>
+        </property>
+        <!-- 忽略的列名称, 被忽略的列将不被处理 -->
+        <!-- 配置列名 id, 则所有表对应的类不会生成 id 属性 -->
+        <property name="columnIgnores">
+            <value>column_name1</value>
+            <value>column_name2</value>
+        </property>
+        <!-- 表的前缀, 生成 Java 类时, 忽略表的前缀 -->
+        <!-- 表名: tb_user_info, 生成的 Java 类: UserInfo -->
+        <property name="tablePrefix">
+            <value>tb_</value>
+            <value>pe_</value>
+        </property>
+        <!-- 数据库类型到生成 Java 类的属性类型之间的映射关系 -->
+        <property name="dataTypes">
+            <value jdbcType="int" javaType="Integer" />
+            <value jdbcType="char" javaType="String" />
+        </property>
+    </schema>
+
+    <!-- [必须项] 扫描器 -->
+    <scanner>
+        <!-- 模板类所在的包, 默认模板类的包为 org.fanlychie.mybatis.template -->
+        <property name="templateClasses" value="org.fanlychie.mybatis.template" />
+        <!-- 模板文件所在的包, 默认模板文件的包为 org.fanlychie.mybatis.template.vm -->
+        <property name="templateVmsPath" value="org.fanlychie.mybatis.template.vm" />
+    </scanner>
+
+    <!-- [必须项] 输出配置, ${basedir} 表示当前项目 -->
+    <output>
+        <!-- 实体类 -->
+        <property name="entity" packname="com.jinniu.commonjn.model" folder="${basedir}/src/main/java"/>
+        <!-- Mybatis 实体类对应的 Xml 文件 -->
+        <property name="mapperXml" packname="com.mapping" folder="${basedir}/src/main/resources" />
+        <!-- Dao 接口 -->
+        <property name="dao" packname="com.jinniu.commonjn.dao" folder="${basedir}/src/main/java" />
+        <!-- Dao 实现类 -->
+        <property name="daoImpl" packname="com.jinniu.commonjn.dao.impl" folder="${basedir}/src/main/java" />
+        <!-- Service 接口-->
+        <property name="service" packname="com.jinniu.commonjn.service" folder="${basedir}/src/main/java" />
+        <!-- Service 实现类-->
+        <property name="serviceImpl" packname="com.jinniu.commonjn.service.impl" folder="${basedir}/src/main/java" />
+    </output>
+
+</configuration>

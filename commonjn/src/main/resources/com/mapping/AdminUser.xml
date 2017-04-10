@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jinniu.commonjn.dao.AdminUserDao">
+
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.jinniu.commonjn.model.AdminUser">
+		INSERT INTO TB_ADMIN_USER (
+			ID, ADD_TIME, EMAIL, LAST_IP, LAST_LOGIN, PASSWORD, USER_NAME
+		) VALUES (
+			#{id}, #{addTime}, #{email}, #{lastIp}, #{lastLogin}, #{password}, #{userName}
+		)
+	</insert>
+
+	<delete id="delete" parameterType="com.jinniu.commonjn.model.AdminUser">
+		DELETE FROM TB_ADMIN_USER <include refid="CriteriaSQL" />
+	</delete>
+
+	<update id="update" parameterType="com.jinniu.commonjn.model.AdminUser">
+		UPDATE TB_ADMIN_USER <include refid="SetSQL" /> <include refid="CriteriaSQL" />
+	</update>
+  
+	<select id="selectCount" parameterType="com.jinniu.commonjn.model.AdminUser" resultType="_long">
+		SELECT COUNT(1) FROM TB_ADMIN_USER <include refid="CriteriaSQL" />
+	</select>
+
+	<select id="selectList" parameterType="com.jinniu.commonjn.model.AdminUser" resultMap="AdminUserResultMap">
+		SELECT * FROM TB_ADMIN_USER <include refid="CriteriaSQL" /> <include refid="OrderbySQL" /> <include refid="LimitSQL" />
+	</select>
+
+	<resultMap id="AdminUserResultMap" type="com.jinniu.commonjn.model.AdminUser">
+		<id property="id" column="ID" />
+		<result property="addTime" column="ADD_TIME" />
+		<result property="email" column="EMAIL" />
+		<result property="lastIp" column="LAST_IP" />
+		<result property="lastLogin" column="LAST_LOGIN" />
+		<result property="password" column="PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+	</resultMap>
+
+	<sql id="SetSQL">
+		<set>
+			<if test="entity.addTime != null">ADD_TIME = #{entity.addTime},</if>
+			<if test="entity.email != null">EMAIL = #{entity.email},</if>
+			<if test="entity.lastIp != null">LAST_IP = #{entity.lastIp},</if>
+			<if test="entity.lastLogin != null">LAST_LOGIN = #{entity.lastLogin},</if>
+			<if test="entity.password != null">PASSWORD = #{entity.password},</if>
+			<if test="entity.userName != null">USER_NAME = #{entity.userName},</if>
+		</set>
+	</sql>
+
+	<sql id="CriteriaSQL">
+		<where>
+			<if test="criteria != null and criteria.notEmpty">
+				<foreach collection="criteria.criterions" item="criterion">
+					<choose>
+						<when test="criterion.noValue">
+							and ${criterion.field} ${criterion.condition}
+						</when>
+						<when test="criterion.singleValue">
+							and ${criterion.field} ${criterion.condition} #{criterion.value}
+						</when>
+						<when test="criterion.betweenValue">
+							and ${criterion.field} ${criterion.condition} #{criterion.value} and #{criterion.value2}
+						</when>
+						<when test="criterion.listValue">
+							and ${criterion.field} ${criterion.condition}
+							<foreach collection="criterion.value" item="item" open="(" separator="," close=")">
+								#{item}
+							</foreach>
+						</when>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+	</sql>
+
+	<sql id="OrderbySQL">
+		<if test="criteria != null and criteria.orderly">
+			ORDER BY 
+			<foreach collection="criteria.orderbies" item="orderby" separator=",">
+				${orderby.field} ${orderby.value}
+			</foreach>
+		</if>
+	</sql>
+
+	<sql id="LimitSQL">
+		<if test="criteria != null and criteria.pagination">
+			LIMIT #{criteria.limit.value}, #{criteria.limit.value2}
+		</if>
+	</sql>
+
+</mapper>
